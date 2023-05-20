@@ -63,6 +63,7 @@ RUN true \
     && adduser -u 9999 -Hh /armagetron -G armagetron -s /sbin/nologin -D armagetron \
     && install -d -o armagetron -g armagetron -m 775 /armagetron \
     && apk add --force-overwrite --no-cache libstdc++ libxml2 \
+    && mkdir ./data ./userdata ./config ./userconfig ./resource ./autoresource ./var \
     && chown armagetron:armagetron -Rf /armagetron \
     && true
 
