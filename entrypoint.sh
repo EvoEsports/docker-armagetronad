@@ -2,7 +2,7 @@
 set -euo pipefail
 
 bindir="/usr/local/bin"
-basedir="/armagetron"
+basedir="/armagetronad"
 datadir="${basedir}/data"
 userdatadir="${basedir}/userdata"
 configdir="${basedir}/config"

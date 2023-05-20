@@ -55,25 +55,25 @@ LABEL org.opencontainers.image.title="Armagetron Advanced Server" \
       org.opencontainers.image.vendor="Evo eSports e.V." \
       org.opencontainers.image.licenses="Apache-2.0"
 
-WORKDIR /armagetron
+WORKDIR /armagetronad
 
 RUN true \
     && set -eux \
-    && addgroup -g 9999 armagetron \
-    && adduser -u 9999 -Hh /armagetron -G armagetron -s /sbin/nologin -D armagetron \
-    && install -d -o armagetron -g armagetron -m 775 /armagetron \
+    && addgroup -g 9999 armagetronad \
+    && adduser -u 9999 -Hh /armagetronad -G armagetronad -s /sbin/nologin -D armagetronad \
+    && install -d -o armagetronad -g armagetronad -m 775 /armagetronad \
     && apk add --force-overwrite --no-cache libstdc++ libxml2 \
     && mkdir ./data ./userdata ./config ./userconfig ./resource ./autoresource ./var \
-    && chown armagetron:armagetron -Rf /armagetron \
+    && chown armagetronad:armagetronad -Rf /armagetronad \
     && true
 
 COPY --from=build-zthread --chmod=0755 "/build/usr/lib/libZThread-2.3.so.2" "/usr/lib/"
 COPY --from=build-armagetronad --chmod=0755 "/build/armagetronad/bin" "/usr/local/bin"
-COPY --from=build-armagetronad --chown=armagetron:armagetron --chmod=0755 "/build/armagetronad/etc/armagetronad-dedicated" "./config"
-COPY --from=build-armagetronad --chown=armagetron:armagetron --chmod=0755 "/build/armagetronad/share/armagetronad-dedicated" "./data"
+COPY --from=build-armagetronad --chown=armagetronad:armagetronad --chmod=0755 "/build/armagetronad/etc/armagetronad-dedicated" "./config"
+COPY --from=build-armagetronad --chown=armagetronad:armagetronad --chmod=0755 "/build/armagetronad/share/armagetronad-dedicated" "./data"
 COPY --chmod=0755 "entrypoint.sh" "/usr/local/bin/"
 
-USER armagetron
+USER armagetronad
 
 STOPSIGNAL SIGKILL
 
@@ -82,6 +82,6 @@ EXPOSE 4534/udp
 HEALTHCHECK --interval=5s --timeout=5s --start-period=10s --retries=3 \
     CMD nc -z -v -u 127.0.0.1 4534 || exit 1
 
-VOLUME [ "/armagetron" ]
+VOLUME [ "/armagetronad" ]
 
 ENTRYPOINT [ "entrypoint.sh" ]
