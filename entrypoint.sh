@@ -1,6 +1,7 @@
 #!/bin/sh
 set -euo pipefail
 
+bindir="/usr/local/bin"
 basedir="/armagetron"
 datadir="${basedir}/data"
 userdatadir="${basedir}/userdata"
