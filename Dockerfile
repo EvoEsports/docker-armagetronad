@@ -70,7 +70,7 @@ RUN true \
     && true
 
 COPY --from=build-zthread --chmod=0755 "/build/usr/lib/libZThread-2.3.so.2" "/usr/lib/"
-COPY --from=build-armagetronad --chown=armagetron:armagetron --chmod=0755 "/build/armagetronad/bin" "./bin"
+COPY --from=build-armagetronad --chmod=0755 "/build/armagetronad/bin" "/usr/local/bin"
 COPY --from=build-armagetronad --chown=armagetron:armagetron --chmod=0755 "/build/armagetronad/etc/armagetronad-dedicated" "./config"
 COPY --from=build-armagetronad --chown=armagetron:armagetron --chmod=0755 "/build/armagetronad/share/armagetronad-dedicated" "./data"
 COPY --chmod=0755 "entrypoint.sh" "/usr/local/bin/"
