@@ -1,6 +1,7 @@
 # build zthread
 FROM alpine:3.18 as build-zthread
 WORKDIR /build
+ADD zthread.patch /build
 RUN true \
     && set -eux \
     && apk upgrade \
@@ -11,10 +12,7 @@ RUN true \
     && for f in config.guess config.sub; do \
 		curl -fsSL -o "$f" "https://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=$f;hb=HEAD"; \
 	done \
-    # I have no clue what this function exactly does, but it compiles now.
-    # Hopefully it's not needed. Further testing desirable.
-    && sed -i 's/PTHREAD_MUTEX_RECURSIVE_NP/PTHREAD_MUTEX_RECURSIVE/g' ./src/linux/FastRecursiveLock.h \
-    && sed -i 's/\[:space:\]/[[:space:]]/g' configure \
+    && patch -p1 < /build/zthread.patch \
     && mkdir /build/usr \
     && CXXFLAGS="-fpermissive" ./configure --prefix=/build/usr \
     && make -j$((`nproc`+1)) && make install \

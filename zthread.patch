@@ -1,0 +1,157 @@
+--- ZThread-2.3.2_orig/include/zthread/Guard.h
++++ ZThread-2.3.2_patched/include/zthread/Guard.h
+@@ -114,11 +114,9 @@
+       if(!Scope2::createScope(l, ms)) {
+ 
+         Scope1::destroyScope(l);
+-        return false;
+ 
+       }
+        
+-    return true;
+ 
+   }
+ 
+@@ -428,7 +426,7 @@
+   template <class U, class V>
+   Guard(Guard<U, V>& g) : LockHolder<LockType>(g) {
+ 
+-    LockingPolicy::shareScope(*this, extract(g));
++    LockingPolicy::shareScope(*this, this->extract(g));
+     
+   }
+ 
+@@ -458,7 +456,7 @@
+   template <class U, class V>
+   Guard(Guard<U, V>& g, LockType& lock) : LockHolder<LockType>(lock) {
+ 
+-    LockingPolicy::transferScope(*this, extract(g));
++    LockingPolicy::transferScope(*this, this->extract(g));
+ 
+   }
+ 
+@@ -491,7 +489,7 @@
+     
+   try {
+     
+-    if(!isDisabled())
++    if(!LockHolder<LockType>::isDisabled())
+       LockingPolicy::destroyScope(*this);
+     
+   } catch (...) { /* ignore */ }   
+--- ZThread-2.3.2_orig/share/pthread.m4
++++ ZThread-2.3.2_patched/share/pthread.m4
+@@ -36,7 +36,7 @@
+ GNU Pth can also be used if it was configured with --enable-pthread.
+ EOF
+ 
+-AC_DEFUN(AM_DETECT_PTHREAD,
++AC_DEFUN([AM_DETECT_PTHREAD],
+ [
+ 
+ pthread_explicit="no"
+--- ZThread-2.3.2_orig/share/zthread.m4
++++ ZThread-2.3.2_patched/share/zthread.m4
+@@ -31,7 +31,7 @@
+ dnl ZTHREAD_CXXFLAGS
+ dnl ZTHREAD_LIBS
+ dnl 
+-AC_DEFUN(AM_PATH_ZTHREAD,
++AC_DEFUN([AM_PATH_ZTHREAD],
+ [
+ 
+ 
+--- ZThread-2.3.2_orig/src/MutexImpl.h
++++ ZThread-2.3.2_patched/src/MutexImpl.h
+@@ -153,7 +153,7 @@
+ 
+       _owner = self;
+ 
+-      ownerAcquired(self);
++      MutexImpl<List,Behavior>::ownerAcquired(self);
+       
+     }
+ 
+@@ -164,7 +164,7 @@
+       _waiters.insert(self);
+       m.acquire();
+ 
+-      waiterArrived(self);
++      MutexImpl<List, Behavior>::waiterArrived(self);
+ 
+       {        
+       
+@@ -173,7 +173,7 @@
+       
+       }
+ 
+-      waiterDeparted(self);
++      MutexImpl<List, Behavior>::waiterDeparted(self);
+ 
+       m.release();
+         
+@@ -192,7 +192,7 @@
+           assert(_owner == 0);
+           _owner = self;    
+ 
+-          ownerAcquired(self);
++          MutexImpl<List, Behavior>::ownerAcquired(self);
+ 
+           break;
+         
+@@ -236,7 +236,7 @@
+ 
+       _owner = self;
+ 
+-      ownerAcquired(self);
++      MutexImpl<List, Behavior>::ownerAcquired(self);
+       
+     }
+ 
+@@ -253,7 +253,7 @@
+       
+         m.acquire();
+ 
+-        waiterArrived(self);
++        MutexImpl<List, Behavior>:: waiterArrived(self);
+       
+         {
+         
+@@ -262,7 +262,7 @@
+         
+         }
+ 
+-        waiterDeparted(self);
++	MutexImpl<List, Behavior>::waiterDeparted(self);
+       
+         m.release();
+         
+@@ -284,7 +284,7 @@
+           assert(0 == _owner);
+           _owner = self;
+ 
+-          ownerAcquired(self);
++	MutexImpl<List, Behavior>::ownerAcquired(self);
+         
+           break;
+         
+@@ -326,7 +326,7 @@
+ 
+     _owner = 0;
+ 
+-    ownerReleased(impl);
++    MutexImpl<List, Behavior>::ownerReleased(impl);
+   
+     // Try to find a waiter with a backoff & retry scheme
+     for(;;) {
+--- ZThread-2.3.2_orig/src/linux/FastRecursiveLock.h
++++ ZThread-2.3.2_patched/src/linux/FastRecursiveLock.h
+@@ -46,7 +46,7 @@
+   
+   inline FastRecursiveLock() {
+     
+-    static const pthread_mutexattr_t attr = { PTHREAD_MUTEX_RECURSIVE_NP };
++    static const pthread_mutexattr_t attr = { PTHREAD_MUTEX_RECURSIVE };
+     pthread_mutex_init(&_mtx, &attr);
+ 
+   }
