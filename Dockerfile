@@ -2,6 +2,7 @@
 FROM alpine:3.18 as build-zthread
 WORKDIR /build
 RUN true \
+    && set -eux \
     && apk upgrade \
     && apk add alpine-sdk wget \
     && wget -q http://prdownloads.sourceforge.net/zthread/ZThread-2.3.2.tar.gz \
@@ -26,6 +27,7 @@ COPY --from=build-zthread --chmod=0755 "/build/usr/bin/zthread-config" "/usr/lib
 COPY --from=build-zthread --chmod=0755 "/build/usr/include/zthread" "/usr/include/"
 COPY --from=build-zthread --chmod=0755 "/build/usr/lib/libZThread-2.3.so.2" "/usr/lib/"
 RUN true \
+    && set -eux \
     && apk upgrade \
     && apk add alpine-sdk autoconf automake bash bison boost-dev libxml2-dev pkgconf protobuf-c-compiler \
     && wget -q -O "armagetronad.tar.gz" "https://bazaar.launchpad.net/~armagetronad-ap/armagetronad/0.2.9-armagetronad-sty+ct+ap/tarball" \

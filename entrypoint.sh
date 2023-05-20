@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -euo pipefail
 
 basedir="/armagetron"
 datadir="${basedir}/data"
