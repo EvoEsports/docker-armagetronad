@@ -81,7 +81,6 @@ EXPOSE 4534/udp
 HEALTHCHECK --interval=5s --timeout=5s --start-period=10s --retries=3 \
     CMD nc -z -v -u 127.0.0.1 4534 || exit 1
 
-VOLUME [ "/armagetron/config" ]
-VOLUME [ "/armagetron/data" ]
+VOLUME [ "/armagetron" ]
 
 ENTRYPOINT [ "entrypoint.sh" ]
