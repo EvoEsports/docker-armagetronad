@@ -24,11 +24,15 @@ WORKDIR /build
 COPY --from=build-zthread --chmod=0755 "/build/usr/bin/zthread-config" "/usr/lib/bin/"
 COPY --from=build-zthread --chmod=0755 "/build/usr/include/zthread" "/usr/include/"
 COPY --from=build-zthread --chmod=0755 "/build/usr/lib/libZThread-2.3.so.2" "/usr/lib/"
+ARG VERSION
+ENV VERSION=$VERSION
 RUN true \
     && set -eux \
     && apk upgrade \
     && apk add alpine-sdk autoconf automake bash bison boost-dev libxml2-dev pkgconf protobuf-c-compiler \
-    && wget -q -O "armagetronad.tar.gz" "https://bazaar.launchpad.net/~armagetronad-ap/armagetronad/0.2.9-armagetronad-sty+ct+ap/tarball" \
+    && URLBASE="https://bazaar.launchpad.net/~armagetronad-ap/armagetronad/0.2.9-armagetronad-sty+ct+ap/tarball" \
+    && if [ -z ${VERSION} ]; then URL="${URLBASE}"; else REV=$(echo ${VERSION} | cut -d'-' -f3 | sed -r 's/rev//'); URL="${URLBASE}/${REV}"; fi \
+    && wget -q -O "armagetronad.tar.gz" $URL \
     && tar xfvz armagetronad.tar.gz --strip=2 \
     && cd 0.2.9-armagetronad-sty+ct+ap \
     && ./bootstrap.sh \
