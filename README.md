@@ -14,7 +14,7 @@
     <a href="https://hub.docker.com/r/evoesports/armagetronad">
         <img src="https://img.shields.io/docker/image-size/evoesports/armagetronad?style=flat-square"
             alt="docker image size"></a>
-    <a href="https://discord.gg/evotm">
+    <a href="https://discord.gg/evoesports">
         <img src="https://img.shields.io/discord/384138149686935562?color=%235865F2&label=discord&logo=discord&logoColor=%23ffffff&style=flat-square"
             alt="chat on Discord"></a>
 </p>
